@@ -7,6 +7,10 @@ from django.contrib.auth import authenticate, login, logout
 
 from user.models import User as UserModel
 from user.serializers import UserSerializer
+
+from user.jwt_serializers import CoustomJWTSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 # Create your views here.
 
 # 유저 조회, 회원가입, 수정, 삭제
@@ -59,3 +63,19 @@ class UserAPIView(APIView):
     def delete(self, request):
         logout(request)
         return Response({"message" : "logout success!!"})
+
+
+class CustomTokenObtainPairview(TokenObtainPairView):
+    serializer_class = CoustomJWTSerializer
+
+class OnlyAuthenticatedUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+		
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        print(f"user 정보 : {user}")
+        if not user:
+            return Response({"error": "접근 권한이 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"message": "Accepted"})
