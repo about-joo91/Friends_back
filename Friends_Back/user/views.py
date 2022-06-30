@@ -11,6 +11,8 @@ from user.serializers import UserSerializer
 from user.jwt_serializers import CoustomJWTSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from rest_framework_simplejwt.settings import api_settings
 # Create your views here.
 
 # 유저 조회, 회원가입, 수정, 삭제
@@ -67,6 +69,8 @@ class UserAPIView(APIView):
 
 
 class CustomTokenObtainPairview(TokenObtainPairView):
+
+
     serializer_class = CoustomJWTSerializer
 
 class OnlyAuthenticatedUserView(APIView):
