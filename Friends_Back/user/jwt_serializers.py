@@ -6,6 +6,6 @@ class CoustomJWTSerializer(TokenObtainPairSerializer):
 
         token['id'] = user.id
         token['username'] = user.username
-        token['fullname'] = user.fullname
+        token['nickname'] = user.nickname
 
         return token
