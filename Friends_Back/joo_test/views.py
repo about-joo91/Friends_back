@@ -5,9 +5,11 @@ from rest_framework.response import Response
 from .serializers import PostSerializer
 from .models import Post as PostModel
 from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
+from django.core import serializers
 import boto3
 from urllib import parse
 import datetime
+from django.http import HttpResponse
 # Create your views here.
 
 
@@ -15,6 +17,7 @@ class PostView(APIView):
     def post(self, request):
         title = request.POST.get('title')
         content = request.POST.get('content')
+        print(request.user)
         try:
             s3_client = boto3.client(
             's3',
@@ -43,7 +46,11 @@ class PostView(APIView):
             post_serializer = PostSerializer(data=post_datas)
             post_serializer.is_valid(raise_exception=True)
             post_serializer.save()
-            return Response({"message" : "게시글 업로드 성공."}, status=status.HTTP_200_OK)
+
+            # event image front 전송 코드
+            # post_event_image = date + "event-" + str(request.user) 임시 코드 (작업후 수정예정)
+            return Response(date,status=status.HTTP_200_OK)
+
         except:
             return Response({"message" : "게시글 업로드 실패."}, status=status.HTTP_400_BAD_REQUEST)
 

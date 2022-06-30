@@ -12,7 +12,6 @@ class PostSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         return obj.author.username
     def create(self, validated_data):
-        print(validated_data)
         author_id = validated_data.pop('author_id')
         author = UserModel.objects.get(id = author_id)
         post_img = validated_data.pop('postimg')
