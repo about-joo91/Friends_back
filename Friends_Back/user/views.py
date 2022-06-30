@@ -8,6 +8,7 @@ from user.models import User as UserModel
 from user.serializers import UserSerializer
 
 
+
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -17,6 +18,8 @@ class UserView(APIView):
         
 
     def post(self,request):
+
+
         user_serializer = UserSerializer(data=request.data, context={"request":request})
     
         if user_serializer.is_valid():

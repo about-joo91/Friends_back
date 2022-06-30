@@ -8,10 +8,11 @@ from .models import Post as PostModel, PostImg as PostImgModel
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField(read_only=True)
     author_id = serializers.IntegerField(write_only= True)
-    postimg = serializers.URLField(write_only= True)
+    postimg = serializers.CharField(write_only= True)
     def get_author(self, obj):
         return obj.author.username
     def create(self, validated_data):
+        print(validated_data)
         author_id = validated_data.pop('author_id')
         author = UserModel.objects.get(id = author_id)
         post_img = validated_data.pop('postimg')
