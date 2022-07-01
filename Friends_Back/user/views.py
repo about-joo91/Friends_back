@@ -1,16 +1,15 @@
 from django.shortcuts import render
+
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 from rest_framework.response import Response
-from django.contrib.auth import authenticate, login, logout
 
 from user.models import User as UserModel
 from user.serializers import UserSerializer
 
-
-
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
+    # permission_classes = [RegistedMoreThanAWeekUser]
 
     def get(self,request):
         all_users = UserModel.objects.all()
@@ -18,7 +17,6 @@ class UserView(APIView):
         
 
     def post(self,request):
-
 
         user_serializer = UserSerializer(data=request.data, context={"request":request})
     
