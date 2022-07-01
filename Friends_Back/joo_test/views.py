@@ -17,22 +17,21 @@ class PostView(APIView):
     def post(self, request):
         title = request.POST.get('title')
         content = request.POST.get('content')
-        print(request.user)
         try:
-            s3_client = boto3.client(
+            s3= boto3.client(
             's3',
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             )
             file = request.FILES['postimg']
             date = (datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
-            s3_client.upload_fileobj(
-                    file,
-                    "bucketfriends",
-                    date,
-                    ExtraArgs={
-                        "ContentType": file.content_type,
-                    }
+            s3.put_object(
+                    ACL= "public-read",
+                    Bucket = "bucketfriends",
+                    Body =file,
+                    Key = date,
+                    # ContentType = file.content_type,
+                    ContentType = file.content_type,
                 )
             author_id = request.user.id
             base_url = "https://bucketfriends.s3.ap-northeast-2.amazonaws.com"
@@ -47,8 +46,8 @@ class PostView(APIView):
             post_serializer.is_valid(raise_exception=True)
             post_serializer.save()
 
-            # event image front 전송 코드
-            # post_event_image = date + "event-" + str(request.user) 임시 코드 (작업후 수정예정)
+            
+        
             return Response(date,status=status.HTTP_200_OK)
 
         except:
