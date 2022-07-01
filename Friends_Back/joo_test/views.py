@@ -9,7 +9,6 @@ from django.core import serializers
 import boto3
 from urllib import parse
 import datetime
-from django.http import HttpResponse
 # Create your views here.
 
 
