@@ -39,7 +39,7 @@ https://www.notion.so/6414be4678e545659a2351b77b1c8aa9?v=99b8a6dae19d41c4b8df9e6
 
 ### 3. API 작업시 변동사항 API 설계 업데이트 하기.
 
-### 4. FULL REQUESTS 작업시 다같이 라이브로 수정한다 or 주맨이 대표로 리뷰하고 merge 한다.
+### 4. PULL REQUESTS 작업시 다같이 라이브로 수정한다 or 주맨이 대표로 리뷰하고 merge 한다.
 
 ### 5. 자기가 맡은 역할 기간 안에 최선을 다해서 끝내기.  ( 당연할 수록 어려움 )
 
