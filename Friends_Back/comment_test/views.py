@@ -1,5 +1,4 @@
 from django.shortcuts import render
-import jwt
 
 from rest_framework.views import APIView
 from rest_framework import permissions, status
@@ -17,12 +16,11 @@ class CommentView(APIView):
     def get(self, request, post_id):
         post_comment = CommentModel.objects.filter(post = post_id)
         return Response(CommentSerializer(post_comment, many=True).data, status=status.HTTP_200_OK)
-    
+       
     def post(self, request, post_id):
         user = request.user
         request.data['user'] = user.id
         request.data['post'] = post_id
-        print(request.data)
         comment_serializer = CommentSerializer(data=request.data, context={"request":request})
         
         if comment_serializer.is_valid():
