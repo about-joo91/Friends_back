@@ -16,11 +16,18 @@ class CommentSerializer(serializers.ModelSerializer):
         comment.user = user
         comment.save()
         return comment
+    
+    def update(self, instance, validated_data):
+
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+
+        return instance
     class Meta:
         model = CommentModel
         fields = ["id", "author",'created_date', 'user', "comment", "post"]
 
         extra_kwargs = {
             'post': {'write_only': True}, # default : False
-            'user': {'write_only': True},
             }
