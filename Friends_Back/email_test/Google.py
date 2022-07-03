@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import os.path
+import os
 import base64
 from email.message import EmailMessage
 
@@ -10,29 +10,30 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-import config
-
-
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
+    'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/gmail.send'
     ]
 
-
-def gmail_send_message(service , email_to, email_from, email_content):
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+def gmail_send_message(email_to, email_from, email_title,email_content):
     """
     이메일을 보낼 수 있는 함수
 
     """
     try:
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+        service = build('gmail', 'v1', credentials=creds)
+
         message = EmailMessage()
 
         message.set_content(email_content)
 
         message['To'] = email_to
         message['From'] = email_from
-        message['Subject'] = 'Automated draft'
+        message['Subject'] = email_title
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
@@ -67,10 +68,18 @@ def create_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                config.CONFIG_JSON, SCOPES)
+                'credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
-    service = build('gmail', 'v1', credentials=creds)
-    return service
+    try:
+        # Call the Gmail API
+        service = build('gmail', 'v1', credentials=creds)
+        results = service.users().getProfile(userId='me').execute()
+        return results['emailAddress']
+
+
+    except HttpError as error:
+        # TODO(developer) - Handle errors from gmail API.
+        print(f'An error occurred: {error}')
