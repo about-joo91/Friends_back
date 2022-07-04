@@ -1,18 +1,22 @@
-from functools import partial
+import datetime
+from urllib import parse
+
+import boto3
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from .serializers import PostSerializer
 from .models import Post as PostModel
 from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
-from django.core import serializers
-import boto3
-from urllib import parse
-import datetime
 # Create your views here.
 
 
 class PostView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
     def post(self, request):
         title = request.POST.get('title')
         content = request.POST.get('content')
@@ -51,12 +55,17 @@ class PostView(APIView):
 
         except:
             return Response({"message" : "게시글 업로드 실패."}, status=status.HTTP_400_BAD_REQUEST)
-
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         cur_user = request.user
         posts = PostModel.objects.filter(author = cur_user)
+        my_post = PostModel.objects.filter(author = cur_user).first()
         return Response(
-            PostSerializer(posts, many=True).data,
+            {
+                "posts": PostSerializer(posts, many=True).data,
+                "my_post" : PostSerializer(my_post).data
+            },
             status=status.HTTP_200_OK
         )
     def put(self, request,post_id):
