@@ -18,13 +18,13 @@ SCOPES = [
     ]
 
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
-def gmail_send_message(email_to, email_from, email_title,email_content):
+def gmail_send_message(email_to, email_from, email_title,email_content, user_id):
     """
     이메일을 보낼 수 있는 함수
 
     """
     try:
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+        creds = Credentials.from_authorized_user_file(f'./token/{user_id}_token.json', SCOPES)
         service = build('gmail', 'v1', credentials=creds)
 
         message = EmailMessage()
@@ -52,7 +52,7 @@ def gmail_send_message(email_to, email_from, email_title,email_content):
     return send_message
 
 
-def create_service():
+def create_service(user_id):
     """Shows basic usage of the Gmail API.
     Lists the user's Gmail labels.
     """
@@ -60,8 +60,8 @@ def create_service():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists(f'./token/{user_id}_token.json'):
+        creds = Credentials.from_authorized_user_file(f'./token/{user_id}_token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -71,15 +71,14 @@ def create_service():
                 'credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.json', 'w') as token:
+        with open(f'./token/{user_id}_token.json', 'w') as token:
             token.write(creds.to_json())
     try:
         # Call the Gmail API
         service = build('gmail', 'v1', credentials=creds)
         results = service.users().getProfile(userId='me').execute()
         return results['emailAddress']
-
-
+        
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
         print(f'An error occurred: {error}')
