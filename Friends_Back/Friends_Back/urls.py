@@ -24,4 +24,5 @@ urlpatterns = [
     path('email_test/',include('email_test.urls')),
     path('bookmark_test/',include('bookmark_test.urls'))
     path('won_test/', include('won_test.urls')),
+    path('follow_test/', include('follow_test.urls')),
 ]

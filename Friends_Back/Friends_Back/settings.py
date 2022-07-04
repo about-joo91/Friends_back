@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'email_test',
     'won_test',
     'comment_test',
-    'email_test',
+    'follow_test',
     'bookmark_test'
 ]
 REST_FRAMEWORK = {
@@ -83,31 +83,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOWED_ORIGINS = [
-    'http://nyangjelly.shop',
-]
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-    "access-control-allow-origin"
-]
-CSRF_TRUSTED_ORIGINS = ['http://nyangjelly.shop']
 
 CORS_ALLOWED_ORIGINS = [
     'http://nyangjelly.shop',
