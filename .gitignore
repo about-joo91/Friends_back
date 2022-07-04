@@ -838,4 +838,9 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
+### 구글 크레덴셜 파일
+
+credentials.json
+token/
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,python,visualstudiocode,visualstudio,pycharm,django

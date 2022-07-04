@@ -9,6 +9,9 @@ class PostSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField(read_only=True)
     author_id = serializers.IntegerField(write_only= True)
     postimg = serializers.CharField(write_only= True)
+    img_url = serializers.SerializerMethodField(read_only=True)
+    def get_img_url(self, obj):
+        return obj.postimg.img_url
     def get_author(self, obj):
         return obj.author.username
     def create(self, validated_data):
@@ -33,4 +36,7 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
     class Meta:
         model = PostModel
-        fields = ["author", "author_id", "title", "content", "postimg"]
+        fields = ["id","author", "author_id", "title", "content", "postimg" ,"img_url"]
+        extra_kwargs = {
+            "id" : {"read_only" : True}
+        }

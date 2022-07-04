@@ -50,6 +50,8 @@ INSTALLED_APPS = [
 
     'joo_test',
     'user',
+    'email_test',
+    'won_test',
     'comment_test',
     'email_test',
     'bookmark_test'
