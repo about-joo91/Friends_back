@@ -8,25 +8,30 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
-"""
 
-from pathlib import Path
+"""
 import datetime
+import os
+from pathlib import Path
+
+import pymysql
+
+import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-import os
-import config
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['http://nyangjelly.shop']
 
 # Application definition
 
@@ -47,6 +52,8 @@ INSTALLED_APPS = [
     'user',
     'email_test',
     'won_test',
+    'comment_test',
+    'email_test',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [ # 기본적인 view 접근 권한 지정
@@ -54,7 +61,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [ # session 혹은 token을 인증 할 클래스 설정
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        
+
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
@@ -77,7 +84,7 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:5500',
+    'http://nyangjelly.shop',
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -99,10 +106,10 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "access-control-allow-origin"
 ]
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5500']
+CSRF_TRUSTED_ORIGINS = ['http://nyangjelly.shop']
 
 CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:5500',
+    'http://nyangjelly.shop',
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -124,7 +131,7 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "access-control-allow-origin"
 ]
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5500']
+CSRF_TRUSTED_ORIGINS = ['http://nyangjelly.shop']
 
 ROOT_URLCONF = 'Friends_Back.urls'
 
@@ -150,13 +157,22 @@ WSGI_APPLICATION = 'Friends_Back.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+
+pymysql.install_as_MySQLdb()
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql', # engine: mysql
+        'NAME' : config.RDS_NAME, # DB Name
+        'USER' : config.RDS_USER, # DB User
+        'PASSWORD' : config.RDS_PASSWORD, # Password
+        'HOST': config.RDS_HOST,
+        'PORT': config.RDS_PORT, # 데이터베이스 포트
+        'OPTIONS':{
+            'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -247,7 +263,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # basic auth 모델 선언
 AUTH_USER_MODEL = 'user.User'
 
-import datetime
 REST_USE_JWT = True
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
