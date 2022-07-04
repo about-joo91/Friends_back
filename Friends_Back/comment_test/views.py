@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -7,16 +5,24 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializers import CommentSerializer
 from .models import Comment as CommentModel
+from joo_test.models import Post as PostModel
+from joo_test.serializers import PostSerializer
 # Create your views here.
 
 class CommentView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 	
     authentication_classes = [JWTAuthentication]
+
     def get(self, request, obj_id):
         # obj_id = post_id 입니다!
+        detail_post = PostModel.objects.filter(id=obj_id)
         post_comment = CommentModel.objects.filter(post = obj_id)
-        return Response(CommentSerializer(post_comment, many=True).data, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "post": PostSerializer(detail_post, many=True).data,
+                "comment": CommentSerializer(post_comment, many=True).data}
+                , status=status.HTTP_200_OK)
        
     def post(self, request, obj_id):
         # obj_id = post_id 입니다!
@@ -48,3 +54,6 @@ class CommentView(APIView):
             comment.delete()
             return Response({"message": "댓글삭제"}, status=status.HTTP_200_OK)
         return Response({"message": "댓글이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    
