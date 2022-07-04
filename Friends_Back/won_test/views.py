@@ -6,8 +6,6 @@ from rest_framework.response import Response
 from joo_test.models import Post as PostModel
 from .models import Like as LikeModel
 
-#from .serializers import LikeSerializer
-
 
 # Create your views here.
 class LikeView(APIView): 
