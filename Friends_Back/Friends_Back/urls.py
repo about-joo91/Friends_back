@@ -21,4 +21,5 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('comment/', include('comment_test.urls')),
     path('joo_test/', include('joo_test.urls')),
+    path('email_test/',include('email_test.urls')),
 ]

@@ -45,7 +45,8 @@ INSTALLED_APPS = [
 
     'joo_test',
     'user',
-    'comment_test'
+    'comment_test',
+    'email_test',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [ # 기본적인 view 접근 권한 지정
