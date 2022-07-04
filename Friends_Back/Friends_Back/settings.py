@@ -31,7 +31,7 @@ SECRET_KEY = config.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://nyangjelly.shop']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'user',
     'comment_test',
     'email_test',
+    'bookmark_test'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [ # 기본적인 view 접근 권한 지정

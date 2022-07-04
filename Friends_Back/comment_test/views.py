@@ -17,7 +17,7 @@ class CommentView(APIView):
         # obj_id = post_id 입니다!
         post_comment = CommentModel.objects.filter(post = obj_id)
         return Response(CommentSerializer(post_comment, many=True).data, status=status.HTTP_200_OK)
-       
+
     def post(self, request, obj_id):
         # obj_id = post_id 입니다!
         user = request.user
