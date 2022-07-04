@@ -8,10 +8,13 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
-"""
 
-from pathlib import Path
+"""
+import pymysql
+import os
+import config
 import datetime
+from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -99,10 +102,10 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "access-control-allow-origin"
 ]
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5500']
+CSRF_TRUSTED_ORIGINS = ['http://nyangjelly.shop']
 
 CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:5500',
+    'http://nyangjelly.shop',
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -124,7 +127,7 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "access-control-allow-origin"
 ]
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5500']
+CSRF_TRUSTED_ORIGINS = ['http://nyangjelly.shop']
 
 ROOT_URLCONF = 'Friends_Back.urls'
 
