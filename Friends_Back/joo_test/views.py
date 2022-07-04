@@ -33,7 +33,6 @@ class PostView(APIView):
                     Bucket = "bucketfriends",
                     Body =file,
                     Key = date,
-                    # ContentType = file.content_type,
                     ContentType = file.content_type,
                 )
             author_id = request.user.id

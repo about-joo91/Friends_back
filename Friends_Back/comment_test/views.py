@@ -23,7 +23,6 @@ class CommentView(APIView):
                 "post": PostSerializer(detail_post, many=True).data,
                 "comment": CommentSerializer(post_comment, many=True).data}
                 , status=status.HTTP_200_OK)
-       
     def post(self, request, obj_id):
         # obj_id = post_id 입니다!
         user = request.user
