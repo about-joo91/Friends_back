@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'email_test',
     'won_test',
     'comment_test',
-    'bookmark_test',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [ # 기본적인 view 접근 권한 지정
@@ -185,7 +184,7 @@ REST_FRAMEWORK = {
 }
 REST_USE_JWT = True
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
