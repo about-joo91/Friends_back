@@ -7,8 +7,9 @@ from joo_test.models import Post as PostModel
 from .models import Like as LikeModel
 
 from user.serializers import UserSerializer
-from .serializers import MypageSerializer
-from .serializers import LikeSerializer
+from joo_test.serializers import PostSerializer
+
+
 
 
 # Create your views here.
@@ -19,19 +20,17 @@ class LikeView(APIView):
         new_like_obj, created = LikeModel.objects.get_or_create(user = user, post=post)
         if created:
             new_like_obj.save()
-            like_serializer_data = LikeSerializer(new_like_obj).data
-            return Response({"nickname": like_serializer_data}, status=status.HTTP_200_OK)
+            return Response({"message": "좋아요 완료!"}, status=status.HTTP_200_OK)
         else:
             new_like_obj.delete()
-            like_serializer_data = LikeSerializer(new_like_obj).data
-            return Response({"nickname": like_serializer_data}, status=status.HTTP_200_OK)        
+            return Response({"message": "좋아요 취소!"}, status=status.HTTP_200_OK)        
 
 
 class MypageView(APIView):
     def get(self, request, user_id):
         user = request.user
         posts = PostModel.objects.filter(author=user)
-        post_serializer_data = MypageSerializer(posts, many=True).data
+        post_serializer_data = PostSerializer(posts, many=True).data
         user_serializer_data = UserSerializer(user).data
         return Response({"posts": post_serializer_data, "user":user_serializer_data}, status=status.HTTP_200_OK)
         
@@ -42,7 +41,7 @@ class LikedPageView(APIView):
         posts = LikeModel.objects.filter(user=user)
         post_ids = [obj.post_id for obj in posts]
         post_objects = [PostModel.objects.get(id=id) for id in post_ids]
-        likepage_serializer_data = MypageSerializer(post_objects, many=True).data
+        likepage_serializer_data = PostSerializer(post_objects, many=True).data
         user_serializer_data = UserSerializer(user).data
         return Response({"posts": likepage_serializer_data, "user": user_serializer_data}, status=status.HTTP_200_OK)
         
