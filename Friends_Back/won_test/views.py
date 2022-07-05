@@ -29,9 +29,8 @@ class LikeView(APIView):
         if created:
             new_like_obj.save()
             return Response({"message": "좋아요 완료!"}, status=status.HTTP_200_OK)
-        else:
-            new_like_obj.delete()
-            return Response({"message": "좋아요 취소!"}, status=status.HTTP_200_OK)        
+        new_like_obj.delete()
+        return Response({"message": "좋아요 취소!"}, status=status.HTTP_200_OK)        
 
 
 class MypageView(APIView):
@@ -41,7 +40,7 @@ class MypageView(APIView):
     def get(self, request, user_id):
         user = request.user
         posts = PostModel.objects.filter(author=user)
-        post_serializer_data = PostSerializer(posts, many=True).data
+        post_serializer_data = PostSerializer(posts, many=True, context={'request':request}).data
         user_serializer_data = UserSerializer(user).data
         return Response({"posts": post_serializer_data, "user":user_serializer_data}, status=status.HTTP_200_OK)
         
@@ -53,8 +52,9 @@ class LikedPageView(APIView):
     def get(self, request, user_id):
         user = request.user
         post_ids = list(map(lambda x: x.post_id, LikeModel.objects.filter(user=user)))
+        print(LikeModel.objects.filter(user=user))
         liked_posts = PostModel.objects.filter(id__in = post_ids)
-        likedpage_serializer_data = PostSerializer(liked_posts, many=True).data
+        likedpage_serializer_data = PostSerializer(liked_posts, many=True, context={'request':request}).data
         user_serializer_data = UserSerializer(user).data
         return Response({"posts": likedpage_serializer_data, "user": user_serializer_data}, status=status.HTTP_200_OK)
         
@@ -68,7 +68,7 @@ class BookmarktView(APIView):
         bookmark = SavePostModel.objects.filter(save_user=request.user)
         posts = list(map(lambda x: x.save_post, bookmark))
         print(posts)
-        return Response({"posts": PostSerializer(posts, many=True).data},
+        return Response({"posts": PostSerializer(posts, many=True, context={'request':request}).data},
             status=status.HTTP_200_OK
         )        
     def post(self, request, post_id):
