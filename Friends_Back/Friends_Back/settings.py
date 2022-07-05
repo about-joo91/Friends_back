@@ -53,8 +53,7 @@ INSTALLED_APPS = [
     'email_test',
     'won_test',
     'comment_test',
-    'follow_test',
-    'bookmark_test'
+    'bookmark_test',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [ # 기본적인 view 접근 권한 지정
@@ -85,7 +84,6 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-
     'http://*',
 ]
 CORS_ALLOW_METHODS = [
