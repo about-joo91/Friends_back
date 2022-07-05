@@ -59,9 +59,8 @@ class PostView(APIView):
         cur_user = request.user
         page_num = int(self.request.query_params.get('page_num'))
         len_of_posts = len(PostModel.objects.all())
-        posts = PostModel.objects.all()[page_num *4 : (page_num+1) *4]
-        my_post = PostModel.objects.filter(author = cur_user).first()
-
+        posts = PostModel.objects.all().order_by('-created_date')[page_num *4 : (page_num+1) *4]
+        my_post = PostModel.objects.filter(author = cur_user).order_by('-created_date').first()
         return Response(
             {
                 "posts": PostSerializer(posts, many=True).data,
