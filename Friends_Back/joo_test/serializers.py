@@ -1,9 +1,9 @@
-from dataclasses import field
-from pdb import post_mortem
 from rest_framework import serializers
+
 from user.models import User as UserModel
 from .models import Post as PostModel, PostImg as PostImgModel
 from user.serializers import UserSerializer
+from won_test.models import Like
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -12,6 +12,13 @@ class PostSerializer(serializers.ModelSerializer):
     author_id = serializers.IntegerField()
     postimg = serializers.CharField(write_only= True)
     img_url = serializers.SerializerMethodField(read_only=True)
+    liked = serializers.SerializerMethodField(read_only=True)
+    bookmarked = serializers.SerializerMethodField(read_only=True)
+
+    def get_bookmarked(self, obj):
+        return obj.savepost_set.exists()
+    def get_liked(self, obj):
+        return obj.like_set.exists()
 
     def get_img_url(self, obj):
         return obj.postimg.img_url
@@ -43,7 +50,7 @@ class PostSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = PostModel
-        fields = ["id","author","author_id", "title", "content", "postimg" ,"img_url"]
+        fields = ["id","author","liked","bookmarked", "author_id", "title", "content", "postimg" ,"img_url"]
         extra_kwargs = {
             "id" : {"read_only" : True}
         }
