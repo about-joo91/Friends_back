@@ -15,8 +15,10 @@ from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
 
 
 class PostView(APIView):
+    
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication] 
+    authentication_classes = [JWTAuthentication]
+
     def post(self, request):
         title = request.POST.get('title')
         content = request.POST.get('content')
@@ -49,25 +51,27 @@ class PostView(APIView):
             post_serializer.is_valid(raise_exception=True)
             post_serializer.save()
 
-            
-        
             return Response(date,status=status.HTTP_200_OK)
 
         except:
             return Response({"message" : "게시글 업로드 실패."}, status=status.HTTP_400_BAD_REQUEST)
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         cur_user = request.user
-        posts = PostModel.objects.filter(author = cur_user)
+        page_num = int(self.request.query_params.get('page_num'))
+        len_of_posts = len(PostModel.objects.all())
+        posts = PostModel.objects.all()[page_num *4 : (page_num+1) *4]
         my_post = PostModel.objects.filter(author = cur_user).first()
+
         return Response(
             {
                 "posts": PostSerializer(posts, many=True).data,
-                "my_post" : PostSerializer(my_post).data
+                "my_post" : PostSerializer(my_post).data,
+                "len_of_posts" : len_of_posts
             },
             status=status.HTTP_200_OK
         )
+
     def put(self, request,post_id):
         author_id = request.user.id
         request.data['author_id'] = author_id
