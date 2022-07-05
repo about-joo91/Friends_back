@@ -12,7 +12,6 @@ from user.serializers import UserSerializer
 from joo_test.serializers import PostSerializer
 
 
-
 # Create your views here.
 class LikeView(APIView):
     permission_classes = [IsAuthenticated]
@@ -48,12 +47,11 @@ class LikedPageView(APIView):
     
     def get(self, request, user_id):
         user = request.user
-        posts = LikeModel.objects.filter(user=user)
-        post_ids = [obj.post_id for obj in posts]
-        post_objects = [PostModel.objects.get(id=id) for id in post_ids]
-        likepage_serializer_data = PostSerializer(post_objects, many=True).data
+        post_ids = list(map(lambda x: x.post_id, LikeModel.objects.filter(user=user)))
+        liked_posts = PostModel.objects.filter(id__in = post_ids)
+        likedpage_serializer_data = PostSerializer(liked_posts, many=True).data
         user_serializer_data = UserSerializer(user).data
-        return Response({"posts": likepage_serializer_data, "user": user_serializer_data}, status=status.HTTP_200_OK)
+        return Response({"posts": likedpage_serializer_data, "user": user_serializer_data}, status=status.HTTP_200_OK)
         
         
         
