@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
 from user.models import User as UserModel
-from .models import Post as PostModel, PostImg as PostImgModel
+from .models import Post as PostModel, PostImg as PostImgModel, SavePost as SavePostModel
 from user.serializers import UserSerializer
-from won_test.models import Like
+from won_test.models import Like as LikeModel
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -16,9 +16,11 @@ class PostSerializer(serializers.ModelSerializer):
     bookmarked = serializers.SerializerMethodField(read_only=True)
 
     def get_bookmarked(self, obj):
-        return obj.savepost_set.exists()
+        cur_user = self.context['request'].user
+        return SavePostModel.objects.filter(save_post =obj, save_user = cur_user)
     def get_liked(self, obj):
-        return obj.like_set.exists()
+        cur_user = self.context['request'].user
+        return LikeModel.objects.filter(user = cur_user, post=obj).exists()
 
     def get_img_url(self, obj):
         return obj.postimg.img_url

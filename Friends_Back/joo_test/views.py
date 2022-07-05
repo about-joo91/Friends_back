@@ -104,7 +104,7 @@ class PostView(APIView):
 
         len_of_posts = len(post_models)
         posts = post_models[page_num *4 : (page_num+1) *4]
-        
+
         my_post = PostModel.objects.filter(author = cur_user).order_by('-created_date').first()
 
         recommend_followers = UserModel.objects.none()
@@ -119,8 +119,8 @@ class PostView(APIView):
         return Response(
             {
                 "cur_user" : UserSerializer(cur_user).data,
-                "posts": PostSerializer(posts, many=True).data,
-                "my_post" : PostSerializer(my_post).data,
+                "posts": PostSerializer(posts, many=True, context={'request' : request}).data,
+                "my_post" : PostSerializer(my_post,context={'request': request}).data,
                 "len_of_posts" : len_of_posts,
                 "recommend_followers": UserSerializer(recommend_followers, many=True).data
             },
