@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from joo_test.models import Post as PostModel
 from .models import Like as LikeModel
@@ -11,9 +13,11 @@ from joo_test.serializers import PostSerializer
 
 
 
-
 # Create your views here.
 class LikeView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
     def post(self, request, post_id):
         user = request.user
         post = PostModel.objects.get(id=post_id)
@@ -27,6 +31,9 @@ class LikeView(APIView):
 
 
 class MypageView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
     def get(self, request, user_id):
         user = request.user
         posts = PostModel.objects.filter(author=user)
@@ -36,6 +43,9 @@ class MypageView(APIView):
         
         
 class LikedPageView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
     def get(self, request, user_id):
         user = request.user
         posts = LikeModel.objects.filter(user=user)
