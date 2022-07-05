@@ -11,6 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import PostSerializer
 from .models import Post as PostModel
 from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
+
 # Create your views here.
 
 
@@ -49,7 +50,7 @@ class PostView(APIView):
             post_serializer = PostSerializer(data=post_datas)
             post_serializer.is_valid(raise_exception=True)
             post_serializer.save()
-
+            
             return Response(date,status=status.HTTP_200_OK)
 
         except:
