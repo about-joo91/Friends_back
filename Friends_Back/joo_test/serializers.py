@@ -3,6 +3,7 @@ from pdb import post_mortem
 from rest_framework import serializers
 from user.models import User as UserModel
 from .models import Post as PostModel, PostImg as PostImgModel
+from user.serializers import UserSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -16,7 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.postimg.img_url
 
     def get_author(self, obj):
-        return obj.author.username
+        return UserSerializer(obj.author).data
 
     def create(self, validated_data):
         author_id = validated_data.pop('author_id')
@@ -42,7 +43,7 @@ class PostSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = PostModel
-        fields = ["id","author", "author_id", "title", "content", "postimg" ,"img_url"]
+        fields = ["id","author","author_id", "title", "content", "postimg" ,"img_url"]
         extra_kwargs = {
             "id" : {"read_only" : True}
         }
