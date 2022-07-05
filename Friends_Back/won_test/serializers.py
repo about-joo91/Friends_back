@@ -1,15 +1,19 @@
 from rest_framework import serializers
-from joo_test.models import Post as PostModel
-from joo_test.models import PostImg as PostImgModel
 
-class MypageSerializer(serializers.ModelSerializer):
-    author = serializers.SerializerMethodField(read_only=True)
-    img_url = serializers.SerializerMethodField(read_only=True)
-    def get_author(self, obj):
-        return obj.author.username
-    def get_img_url(self, obj):
-        return obj.postimg.img_url
-    
+from joo_test.models import SavePost as Save_postModel
+from joo_test.serializers import PostSerializer
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    save_post = serializers.SerializerMethodField()
+
+    def get_save_post(self,obj):
+        return PostSerializer(obj.save_post).data
+
     class Meta:
-        model = PostModel
-        fields = ["id", "title", "content", "author", "img_url"]
+        model = Save_postModel
+        fields = ["save_user","save_post"]
+
+    extra_kwargs = {
+            'save_user': {'write_only': True},
+            }

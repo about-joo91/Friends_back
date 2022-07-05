@@ -8,4 +8,5 @@ urlpatterns = [
     path('login/', TokenObtainPairView.as_view()),
     path('sign_up/', views.UserView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('follow/<int:user_id>', views.FollowView.as_view()),
 ]

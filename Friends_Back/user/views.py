@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from user.models import User as UserModel
 from user.serializers import UserSerializer
@@ -38,3 +39,20 @@ class UserView(APIView):
     def delete(self,request):
         return Response({"message" : "delete method!!"})
 
+# Create your views here.
+class FollowView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, user_id):
+        user = request.user
+        clicked_user = UserModel.objects.get(id=user_id)
+        if user.follow.filter(id = clicked_user.id):
+            user.follow.remove(clicked_user)
+            return Response({
+                "message" : "팔로우 취소"
+            }, status=status.HTTP_200_OK)
+        user.follow.add(clicked_user)
+        return Response({
+            "message" : "팔로우 성공"
+        }, status=status.HTTP_200_OK)
