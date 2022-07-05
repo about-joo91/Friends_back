@@ -1,6 +1,18 @@
 from rest_framework import serializers
+from joo_test.serializers import PostSerializer
 from joo_test.models import Post as PostModel
-from joo_test.models import PostImg as PostImgModel
+from .models import Like as LikeModel
+
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    nickname = serializers.SerializerMethodField(read_only=True)
+    def get_nickname(self, obj):
+        return obj.user.username
+    class Meta:
+        model = LikeModel
+        fields = ["nickname"]
+
 
 class MypageSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField(read_only=True)
@@ -13,3 +25,8 @@ class MypageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostModel
         fields = ["id", "title", "content", "author", "img_url"]
+        
+        
+
+# class LikedPageSerializer(serializers.ModelSerializer):
+#     posts = serializers.
