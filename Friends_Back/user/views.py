@@ -26,7 +26,6 @@ class UserView(APIView):
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def put(self, request, obj_id):
         user = UserModel.objects.get(id=obj_id)
         user_serializer = UserSerializer(user, data=request.data, partial=True, context={"request":request})
@@ -38,3 +37,4 @@ class UserView(APIView):
 
     def delete(self,request):
         return Response({"message" : "delete method!!"})
+
