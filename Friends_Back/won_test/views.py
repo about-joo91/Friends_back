@@ -2,15 +2,21 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from joo_test.models import Post as PostModel
 from .models import Like as LikeModel
 
 from user.serializers import UserSerializer
-from .serializers import MypageSerializer
+from joo_test.serializers import PostSerializer
+
 
 # Create your views here.
-class LikeView(APIView): 
+class LikeView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
     def post(self, request, post_id):
         user = request.user
         post = PostModel.objects.get(id=post_id)
@@ -24,12 +30,28 @@ class LikeView(APIView):
 
 
 class MypageView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
     def get(self, request, user_id):
         user = request.user
         posts = PostModel.objects.filter(author=user)
-        post_serializer_data = MypageSerializer(posts, many=True).data
+        post_serializer_data = PostSerializer(posts, many=True).data
         user_serializer_data = UserSerializer(user).data
         return Response({"posts": post_serializer_data, "user":user_serializer_data}, status=status.HTTP_200_OK)
+        
+        
+class LikedPageView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request, user_id):
+        user = request.user
+        post_ids = list(map(lambda x: x.post_id, LikeModel.objects.filter(user=user)))
+        liked_posts = PostModel.objects.filter(id__in = post_ids)
+        likedpage_serializer_data = PostSerializer(liked_posts, many=True).data
+        user_serializer_data = UserSerializer(user).data
+        return Response({"posts": likedpage_serializer_data, "user": user_serializer_data}, status=status.HTTP_200_OK)
         
         
         
