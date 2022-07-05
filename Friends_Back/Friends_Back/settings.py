@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'email_test',
     'won_test',
     'comment_test',
-    'bookmark_test',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [ # 기본적인 view 접근 권한 지정
