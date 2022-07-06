@@ -1,6 +1,5 @@
 import datetime
 import os
-from urllib import parse
 import boto3
 from rest_framework.views import APIView
 from rest_framework import status
@@ -61,10 +60,13 @@ class PreviewView(APIView):
                     checkpoint_path=os.path.join(target_folder,'vox-cpk.pth.tar'))
 
         predictions = make_animation(source_image, driving_video, generator, kp_detector, relative=True)
+
         result_folder = '/home/ubuntu/Friends_Back/Friends_back/Friends_Back/result'
         event_name = input_name + "deep.gif"
+
         #save resulting video
         imageio.mimsave(os.path.join(result_folder, event_name), [img_as_ubyte(frame) for frame in predictions], format="GIF")
+
         data = open(os.path.join(result_folder, event_name), 'rb')
         print(os.path.join(result_folder, event_name))
 
@@ -77,6 +79,7 @@ class PreviewView(APIView):
         )
 
         return Response(event_name,status=status.HTTP_200_OK)
+        
 class PostView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
