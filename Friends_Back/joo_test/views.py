@@ -15,7 +15,29 @@ from .models import Post as PostModel
 from user.serializers import UserSerializer
 from user.models import User as UserModel
 from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
+
+import warnings
+import imageio
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from skimage.transform import resize
+import warnings
+import os
+import skvideo.io
+from skimage import img_as_ubyte
+from first_order_model.demo import load_checkpoints, make_animation
+
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 # Create your views here.
+import requests
+import urllib.request 
+from django.core.files.storage import default_storage 
+ 
+#file_obj = request.data['file'] 
+#with default_storage.open('input/'+input_file.name, 'wb+') as destination:
+#    for chunk in file_obj.chunks(): destination.write(chunk)
 
 
 class PreviewView(APIView):
@@ -31,40 +53,112 @@ class PreviewView(APIView):
 
         input_file = request.FILES['postimg']
         input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    
 
         s3.put_object(
-                ACL= "public-read",
-                Bucket = "bucketfriends",
-                Body =input_file,
-                Key = input_name,
-                ContentType = input_file.content_type,
-            )
+                 ACL= "public-read",
+                 Bucket = "bucketfriends",
+                 Body =input_file,
+                 Key = input_name + "origin.gif",
+                 ContentType = input_file.content_type,
+             )
         #### 테스트 코드 입니다. #####
+        url = "https://bucketfriends.s3.ap-northeast-2.amazonaws.com/" + input_name + "origin.gif"
+        with urllib.request.urlopen(url) as fh:
+            with open(f'./input/{input_name}origin.gif', 'wb') as out: 
+                out.write(fh.read())
 
-        # input_file = request.FILES['postimg']
-        # input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        # event_name = str(request.user.id) + "preview"
-        # event_file = request.FILES['eventimg']
-        # file_list = []
-        # file_list.append(input_file)
-        # file_list.append(event_file)
-        # name_list= []
-        # name_list.append(input_name)
-        # name_list.append(event_name)
-        # for i in range(2):
-        #     file = file_list[i]
-        #     name = name_list[i]
-        #     print(file,name)
-        #     s3.put_object(
-        #         ACL= "public-read",
-        #         Bucket = "bucketfriends",
-        #         Body =file,
-        #         Key = name,
-        #         ContentType = file.content_type,
-        #     )
+        #input_file = request.FILES['postimg']
+        #file_type = input_file.name.split(".")[-1]
+      
+        #input_name = date + "origin." + file_type
+        
+        #with open('/input/'+input_name+".gif", 'wb') as f:
+        #    f.write(requests.get(url).content)
+
+        #input_folder = "./input"
+        #imageio.imwrite(os.path.join(input_folder, input_name), im, file_type )
+        #imageio.mimsave(os.path.join(input_folder, input_name),input_file, format="GIF", duration=0.04)
+        
+                   
+       # file_obj = request.data['file'] 
+       # with default_storage.open('input/'+input_file.name, 'wb+') as destination:
+        #    for chunk in file_obj.chunks():
+         #       destination.write(chunk)
+        # 딥러닝에 넣기
+        warnings.filterwarnings("ignore")
+
+
+       # open(input_file, "w").write(os.path.join(input_folder, input_name))
+       # path = default_storage.save('tmp/somename.mp3', ContentFile(data.read()))
+       
+       # )
+ 
+        
+        #file = request.FILES['postimg'] 
+        #input_name), ContentFile(file.read()))
+
+        #입력사진
+        source_image = imageio.imread(f'/home/ubuntu/Friends_Back/Friends_back/Friends_Back/friends_img/{choice_char}.jpeg')
+        #source_image = imageio.imread(f'/home/ubuntu/Friends_Back/Friends_back/Friends_Back/friends_img/4.jpg')
+
+        #입력영상
+        driving_video = skvideo.io.vread(f"./input/{input_name}origin.gif")
+       # driving_video  =  skvideo.io.vread(input_file.name)
+
+        #Resize image and video to 256x256
+        source_image = resize(source_image, (256, 256))[..., :3]
+        driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
+        
+        # from demo import load_checkpoints
+        target_folder = "/home/ubuntu/Friends_Back/Friends_back/Friends_Back/first_order_model/"
+        generator, kp_detector = load_checkpoints(config_path=os.path.join(target_folder,'vox-256.yaml'),
+                                    checkpoint_path=os.path.join(target_folder,'vox-cpk.pth.tar'))
+        
+        predictions = make_animation(source_image, driving_video, generator, kp_detector, relative=True)
+        
+        result_folder = '/home/ubuntu/Friends_Back/Friends_back/Friends_Back/result'
+        event_name = input_name + "deep.gif"
+        
+        #save resulting video
+        imageio.mimsave(os.path.join(result_folder, event_name), [img_as_ubyte(frame) for frame in predictions], format="GIF")
+        
+        data = open(os.path.join(result_folder, event_name), 'rb')
+        print(os.path.join(result_folder, event_name))
+        #output_file = skvideo.io.vread(f"./result/{event_name}")
+        #output_img = imageio.imread(f"./result/{event_name}")
+       
+        #s3_resource
+
+       # s3.Bucket("bucketfriends").put_object(Body=data, Key=event_name, ACL= "public-read")
+
+
+
+
+        s3.put_object(
+             ACL= "public-read",
+             Bucket = "bucketfriends",
+             Body =data,
+             Key = event_name,
+             ContentType =input_file.content_type,
+            )
+
+
+        #from io import BytesIO 
+       # from PIL import Image 
+       # im = Image.new("RGB", (50, 50)) 
+        #data = BytesIO() 
+        #im.save(data, "gif") data.seek(0) # e.g. save to file import shutil 
+       # with open("image.gif", "wb") as f: 
+         #   shutil.copyfileobj(data, f)
+
+
+        #s3 = boto3.client('s3') 
+        #with open("FILE_NAME", "rb") as f: 
+        #    s3.upload_fileobj(f, "BUCKET_NAME", "OBJECT_NAME")
         #### 딥러닝 출력이랑 로직 합쳐야 작동 합니다 ######
-        #### 합친 후 리턴 값 바꿔줘야 합니다 ####
-        return Response(input_name,status=status.HTTP_200_OK)
+        #### 합친 후 리턴 값 바꿔줘야 합니다 ####)
+        return Response(event_name,status=status.HTTP_200_OK)
 
 
 
@@ -113,7 +207,8 @@ class PostView(APIView):
         recommend_followers.exclude(id__in = my_followers).exclude(id=cur_user.id).order_by('-created_date')[:10]
         if len(recommend_followers) == 0:
             recommend_followers = UserModel.objects.all().exclude(
-                    id__in = my_followers).exclude(id=cur_user.id).order_by('-created_date')[:10]
+                    id__in = my_followers).exclude(id=cur_user.id).order_by(
+                '-created_date')[:10]
 
         return Response(
             {
