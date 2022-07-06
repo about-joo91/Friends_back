@@ -78,7 +78,7 @@ class PreviewView(APIView):
         ContentType =input_file.content_type,
         )
 
-        return Response(event_name,status=status.HTTP_200_OK)
+        return Response({event_name},status=status.HTTP_200_OK)
         
 class PostView(APIView):
     permission_classes = [IsAuthenticated]
