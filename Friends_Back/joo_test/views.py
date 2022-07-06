@@ -13,70 +13,70 @@ from user.serializers import UserSerializer
 from user.models import User as UserModel
 from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
 import warnings
-# import imageio
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.animation as animation
-# from skimage.transform import resize
-# import warnings
-# import os
-# import skvideo.io
-# from skimage import img_as_ubyte
-# from first_order_model.demo import load_checkpoints, make_animation
+import imageio
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from skimage.transform import resize
+import warnings
+import os
+import skvideo.io
+from skimage import img_as_ubyte
+from first_order_model.demo import load_checkpoints, make_animation
 
 
-# class PreviewView(APIView):
-#     def post(self,request):
-#         choice_char = request.data['choice']
+class PreviewView(APIView):
+    def post(self,request):
+        choice_char = request.data['choice']
 
-#         s3= boto3.client(
-#             's3',
-#             aws_access_key_id=AWS_ACCESS_KEY_ID,
-#             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-#             )
-#         input_file = request.FILES['postimg']
-#         input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-#         s3.put_object(
-#             ACL= "public-read",
-#             Bucket = "bucketfriends",
-#             Body =input_file,
-#             Key = input_name + "origin.gif",
-#             ContentType = input_file.content_type,
-#             )
-#         # 딥러닝에 넣기
-#         warnings.filterwarnings("ignore")
+        s3= boto3.client(
+            's3',
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            )
+        input_file = request.FILES['postimg']
+        input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+        s3.put_object(
+            ACL= "public-read",
+            Bucket = "bucketfriends",
+            Body =input_file,
+            Key = input_name + "origin.gif",
+            ContentType = input_file.content_type,
+            )
+        # 딥러닝에 넣기
+        warnings.filterwarnings("ignore")
 
-#         #입력사진
-#         source_image = imageio.imread(f'/home/ubuntu/Friends_Back/Friends_back/Friends_Back/friends_img/{choice_char}.jpeg')
+        #입력사진
+        source_image = imageio.imread(f'/home/ubuntu/Friends_Back/Friends_back/Friends_Back/friends_img/{choice_char}.jpeg')
 
-#         #입력영상
-#         driving_video = skvideo.io.vread(f'./input/{input_name}origin.gif')
+        #입력영상
+        driving_video = skvideo.io.vread(f'./input/{input_name}origin.gif')
 
-#         #Resize image and video to 256x256
-#         source_image = resize(source_image, (256, 256))[..., :3]
-#         driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
-#         # from demo import load_checkpoints
-#         target_folder = "/home/ubuntu/Friends_Back/Friends_back/Friends_Back/first_order_model/"
-#         generator, kp_detector = load_checkpoints(config_path=os.path.join(target_folder,'vox-256.yaml'),
-#                     checkpoint_path=os.path.join(target_folder,'vox-cpk.pth.tar'))
+        #Resize image and video to 256x256
+        source_image = resize(source_image, (256, 256))[..., :3]
+        driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
+        # from demo import load_checkpoints
+        target_folder = "/home/ubuntu/Friends_Back/Friends_back/Friends_Back/first_order_model/"
+        generator, kp_detector = load_checkpoints(config_path=os.path.join(target_folder,'vox-256.yaml'),
+                    checkpoint_path=os.path.join(target_folder,'vox-cpk.pth.tar'))
 
-#         predictions = make_animation(source_image, driving_video, generator, kp_detector, relative=True)
-#         result_folder = '/home/ubuntu/Friends_Back/Friends_back/Friends_Back/result'
-#         event_name = input_name + "deep.gif"
-#         #save resulting video
-#         imageio.mimsave(os.path.join(result_folder, event_name), [img_as_ubyte(frame) for frame in predictions], format="GIF")
-#         data = open(os.path.join(result_folder, event_name), 'rb')
-#         print(os.path.join(result_folder, event_name))
+        predictions = make_animation(source_image, driving_video, generator, kp_detector, relative=True)
+        result_folder = '/home/ubuntu/Friends_Back/Friends_back/Friends_Back/result'
+        event_name = input_name + "deep.gif"
+        #save resulting video
+        imageio.mimsave(os.path.join(result_folder, event_name), [img_as_ubyte(frame) for frame in predictions], format="GIF")
+        data = open(os.path.join(result_folder, event_name), 'rb')
+        print(os.path.join(result_folder, event_name))
 
-#         s3.put_object(
-#         ACL= "public-read",
-#         Bucket = "bucketfriends",
-#         Body =data,
-#         Key = event_name,
-#         ContentType =input_file.content_type,
-#         )
+        s3.put_object(
+        ACL= "public-read",
+        Bucket = "bucketfriends",
+        Body =data,
+        Key = event_name,
+        ContentType =input_file.content_type,
+        )
 
-#         return Response(event_name,status=status.HTTP_200_OK)
+        return Response(event_name,status=status.HTTP_200_OK)
 class PostView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
