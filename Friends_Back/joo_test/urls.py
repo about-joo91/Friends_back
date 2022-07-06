@@ -11,6 +11,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', views.PostView.as_view()),
     path('<int:post_id>', views.PostView.as_view()),
-    path('priview/',views.PreviewView.as_view()),
+    path('preview/',views.PreviewView.as_view()),
     
 ]
