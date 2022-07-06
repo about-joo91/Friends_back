@@ -20,7 +20,7 @@ class CommentView(APIView):
         post_comment = CommentModel.objects.filter(post = obj_id)
         return Response(
             {
-                "post": PostSerializer(detail_post, many=True).data,
+                "post": PostSerializer(detail_post, many=True, context={'request': request}).data,
                 "comment": CommentSerializer(post_comment, many=True).data}
                 , status=status.HTTP_200_OK)
     def post(self, request, obj_id):

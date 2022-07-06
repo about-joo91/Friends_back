@@ -36,6 +36,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
 
     is_admin = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'username'
         

@@ -55,4 +55,4 @@ class FollowView(APIView):
         user.follow.add(clicked_user)
         return Response({
             "message" : "팔로우 성공"
-        }, status=status.HTTP_400_BAD_REQUEST)
+        }, status=status.HTTP_200_OK)
