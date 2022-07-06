@@ -11,6 +11,8 @@ from .models import Post as PostModel
 from user.serializers import UserSerializer
 from user.models import User as UserModel
 from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
+
+
 import warnings
 import imageio
 import numpy as np
@@ -26,7 +28,8 @@ from first_order_model.demo import load_checkpoints, make_animation
 
 class PreviewView(APIView):
     def post(self,request):
-        choice_char = request.data['choice']
+
+        choice_char = request.POST.get('choice',0)
 
         s3= boto3.client(
             's3',
@@ -77,9 +80,7 @@ class PreviewView(APIView):
         Key = event_name,
         ContentType =input_file.content_type,
         )
-
-        return Response({event_name},status=status.HTTP_200_OK)
-        
+        return Response(event_name,status=status.HTTP_200_OK)
 class PostView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
