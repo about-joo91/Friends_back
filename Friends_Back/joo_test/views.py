@@ -17,96 +17,64 @@ from user.models import User as UserModel
 from config import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
 
 
-# import warnings
-# import imageio
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.animation as animation
-# from skimage.transform import resize
-# import warnings
-# import os
-# import skvideo.io
-# from skimage import img_as_ubyte
-# from first_order_model.demo import load_checkpoints, make_animation
-# # Create your views here.
+# Create your views here.
 
 
-class PreviewView(APIView):
-    def post(self,request):
+# class PreviewView(APIView):
+    # def post(self,request):
         
-        # choice_char = request.data['choice']
+    #     choice_char = request.data['choice']
 
-        s3= boto3.client(
-        's3',
-        aws_access_key_id=AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
+    #     s3= boto3.client(
+    #     's3',
+    #     aws_access_key_id=AWS_ACCESS_KEY_ID,
+    #     aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    #     )
 
-        # input_file = request.FILES['postimg']
-        # input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    #     # input_file = request.FILES['postimg']
+    #     # input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     
 
-        # s3.put_object(
-        #         ACL= "public-read",
-        #         Bucket = "bucketfriends",
-        #         Body =input_file,
-        #         Key = input_name,
-        #         ContentType = input_file.content_type,
-        #     )
-        #### 테스트 코드 입니다. #####
+    #     # s3.put_object(
+    #     #         ACL= "public-read",
+    #     #         Bucket = "bucketfriends",
+    #     #         Body =input_file,
+    #     #         Key = input_name,
+    #     #         ContentType = input_file.content_type,
+    #     #     )
+    #     #### 테스트 코드 입니다. #####
 
-        input_file = request.FILES['postimg']
-        input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    #     input_file = request.FILES['postimg']
+    #     input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         
-        # # 딥러닝에 넣기
-        # warnings.filterwarnings("ignore")
-
-        # #입력사진
-        # source_image = imageio.imread('/home/ubuntu/Friends_back/friends_img/{choice_char}.png')
-
-        # #입력영상
-        # driving_video = skvideo.io.vread(input_file)
         
-        # #Resize image and video to 256x256
-        # source_image = resize(source_image, (256, 256))[..., :3]
-        # driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
-        
-        # # from demo import load_checkpoints
-        # target_folder = "first-order-model/"
-        # generator, kp_detector = load_checkpoints(config_path='config/vox-256.yaml',
-        #                             checkpoint_path=os.path.join(target_folder,'vox-cpk.pth.tar'))
-        
-        # predictions = make_animation(source_image, driving_video, generator, kp_detector, relative=True)
-        
-        # event_name = str(request.user.id) + "preview"
-        # event_file = request.FILES['eventimg']
-        # #save resulting video
-        # imageio.mimsave(event_file, [img_as_ubyte(frame) for frame in predictions], format="GIF")
+    #     event_name = str(request.user.id) + "preview"
+    #     event_file = request.FILES['eventimg']
+    #     #save resulting video
+    #     imageio.mimsave(event_file, [img_as_ubyte(frame) for frame in predictions], format="GIF")
 
         
-        # # file_list = []
-        # file_list.append(input_file)
-        # file_list.append(event_file)
-        # # name_list= []
-        # # name_list.append(input_name)
-        # # name_list.append(event_name)
+    #     file_list = []
+    #     file_list.append(input_file)
+    #     file_list.append(event_file)
+    #     name_list= []
+    #     name_list.append(input_name)
+    #     name_list.append(event_name)
         
-        # for i in range(2):
-        #     file = file_list[i]
-        #     name = name_list[i]
-        #     print(file,name)
-        #     s3.put_object(
-        #         ACL= "public-read",
-        #         Bucket = "bucketfriends",
-        #         Body =file,
-        #         Key = name,
-        #         ContentType = file.content_type,
-            # )
-        #### 딥러닝 출력이랑 로직 합쳐야 작동 합니다 ######
-        #### 합친 후 리턴 값 바꿔줘야 합니다 ####
-        print(input_file.name)
-        return Response(input_name,status=status.HTTP_200_OK)
-
+    #     for i in range(2):
+    #         file = file_list[i]
+    #         name = name_list[i]
+    #         print(file,name)
+    #         s3.put_object(
+    #             ACL= "public-read",
+    #             Bucket = "bucketfriends",
+    #             Body =file,
+    #             Key = name,
+    #             ContentType = file.content_type,
+    #         )
+    #     #### 딥러닝 출력이랑 로직 합쳐야 작동 합니다 ######
+    #     #### 합친 후 리턴 값 바꿔줘야 합니다 ####
+        # return Response(input_name,status=status.HTTP_200_OK)
 
 
 class PostView(APIView):    

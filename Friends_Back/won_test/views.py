@@ -11,7 +11,7 @@ from joo_test.models import Post as PostModel
 from joo_test.models import PostImg as PostImgModel
 from joo_test.models import SavePost as SavePostModel
 
-from user.serializers import UserSerializer
+
 from joo_test.serializers import PostSerializer
 from .serializers import BookmarkSerializer
 
@@ -41,8 +41,7 @@ class MypageView(APIView):
         user = request.user
         posts = PostModel.objects.filter(author=user)
         post_serializer_data = PostSerializer(posts, many=True, context={'request':request}).data
-        user_serializer_data = UserSerializer(user).data
-        return Response({"posts": post_serializer_data, "user":user_serializer_data}, status=status.HTTP_200_OK)
+        return Response({"posts": post_serializer_data}, status=status.HTTP_200_OK)
         
         
 class LikedPageView(APIView):
@@ -55,8 +54,8 @@ class LikedPageView(APIView):
         print(LikeModel.objects.filter(user=user))
         liked_posts = PostModel.objects.filter(id__in = post_ids)
         likedpage_serializer_data = PostSerializer(liked_posts, many=True, context={'request':request}).data
-        user_serializer_data = UserSerializer(user).data
-        return Response({"posts": likedpage_serializer_data, "user": user_serializer_data}, status=status.HTTP_200_OK)
+        print(likedpage_serializer_data)
+        return Response({"posts": likedpage_serializer_data}, status=status.HTTP_200_OK)
         
         
 
