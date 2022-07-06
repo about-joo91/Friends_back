@@ -110,11 +110,10 @@ class PostView(APIView):
         recommend_followers = UserModel.objects.none()
         for user_obj in my_followers:
             recommend_followers|= user_obj.follow.all()
-        recommend_followers.exclude(id__in = my_followers).exclude(id=cur_user.id)[:10]
+        recommend_followers.exclude(id__in = my_followers).exclude(id=cur_user.id).order_by('-created_date')[:10]
         if len(recommend_followers) == 0:
-            recommend_followers = UserModel.objects.all().order_by(
-                '-created_date').exclude(
-                    id__in = my_followers).exclude(id=cur_user.id)[:10]
+            recommend_followers = UserModel.objects.all().exclude(
+                    id__in = my_followers).exclude(id=cur_user.id).order_by('-created_date')[:10]
 
         return Response(
             {
