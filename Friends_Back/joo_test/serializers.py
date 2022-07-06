@@ -17,7 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_bookmarked(self, obj):
         cur_user = self.context['request'].user
-        return SavePostModel.objects.filter(save_post =obj, save_user = cur_user)
+        return SavePostModel.objects.filter(save_post =obj, save_user = cur_user).exists()
     def get_liked(self, obj):
         cur_user = self.context['request'].user
         return LikeModel.objects.filter(user = cur_user, post=obj).exists()
