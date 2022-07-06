@@ -37,7 +37,7 @@ class MypageView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def get(self, request, user_id):
+    def get(self, request):
         user = request.user
         posts = PostModel.objects.filter(author=user)
         post_serializer_data = PostSerializer(posts, many=True, context={'request':request}).data
@@ -49,7 +49,7 @@ class LikedPageView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def get(self, request, user_id):
+    def get(self, request):
         user = request.user
         post_ids = list(map(lambda x: x.post_id, LikeModel.objects.filter(user=user)))
         print(LikeModel.objects.filter(user=user))

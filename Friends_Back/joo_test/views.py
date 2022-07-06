@@ -35,15 +35,11 @@ import requests
 import urllib.request 
 from django.core.files.storage import default_storage 
  
-#file_obj = request.data['file'] 
-#with default_storage.open('input/'+input_file.name, 'wb+') as destination:
-#    for chunk in file_obj.chunks(): destination.write(chunk)
-
 
 class PreviewView(APIView):
     def post(self,request):
         
-        choice_char = request.data['choice']
+        # choice_char = request.data['choice']
 
         s3= boto3.client(
         's3',
@@ -51,8 +47,10 @@ class PreviewView(APIView):
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
 
+
         input_file = request.FILES['postimg']
         input_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+
     
 
         s3.put_object(
@@ -181,7 +179,9 @@ class PostView(APIView):
             post_serializer = PostSerializer(data=post_datas)
             post_serializer.is_valid(raise_exception=True)
             post_serializer.save()
+            
             return Response(status=status.HTTP_200_OK)
+
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
