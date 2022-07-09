@@ -50,13 +50,9 @@ class LikedPageView(APIView):
     
     def get(self, request):
         user = request.user
-        post_ids = list(map(lambda x: x.post_id, LikeModel.objects.filter(user=user)))
-        print(LikeModel.objects.filter(user=user))
-        liked_posts = PostModel.objects.filter(id__in = post_ids)
+        liked_posts = PostModel.objects.filter(like_set__user = user)
         likedpage_serializer_data = PostSerializer(liked_posts, many=True, context={'request':request}).data
-        print(likedpage_serializer_data)
         return Response({"posts": likedpage_serializer_data}, status=status.HTTP_200_OK)
-        
         
 
 class BookmarktView(APIView):
